@@ -1,16 +1,12 @@
 package  hexlet.code;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
+
+import java.util.concurrent.Callable;
 
 @Command(
         name = "gendiff",
@@ -20,7 +16,7 @@ import java.util.Map;
 
 )
 
-public class App implements Runnable {
+public class App implements Callable<Integer> {
 
     @Option(names = {"-f", "--format"}, paramLabel = "format", description = "output format [default: stylish]")
     String format = "stylish";
@@ -32,7 +28,6 @@ public class App implements Runnable {
     String filepath2;
 
     public static void main(String[] args) {
-
         try {
             int exitCode = new CommandLine(new App()).execute(args);
             System.exit(exitCode);
@@ -43,27 +38,9 @@ public class App implements Runnable {
     }
 
     @Override
-    public void run() {
-        try {
-            Map<String, Object> data1 = getData(filepath1);
-            Map<String, Object> data2 = getData(filepath2);
-
-            System.out.println("File 1 contents:");
-            System.out.println(data1);
-            System.out.println("File 2 contents:");
-            System.out.println(data2);
-
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-    }
-
-    private static Map<String, Object> getData(String filePath) throws Exception {
-        Path path = Path.of(filePath).toAbsolutePath().normalize();
-        String content = Files.readString(path);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(content, new TypeReference<>() {});
-
+    public Integer call() {
+        System.out.println(Differ.generate(filepath1, filepath2));
+        return 0;
     }
 
 }
