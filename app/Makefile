@@ -4,6 +4,10 @@ run-dist:
 clean:
 	./gradlew clean
 
+.PHONY: build report
+
 build:
 	./gradlew installDist
 
+report:
+	./gradlew jacocoTestReport

@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Objects;
 
 public class Differ {
     public static String generate(String filepath1, String filepath2) {
@@ -63,7 +65,7 @@ public class Differ {
         Path path = Path.of(filePath).toAbsolutePath().normalize();
         String content = Files.readString(path);
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(content, new TypeReference<>() {});
+        return mapper.readValue(content, new TypeReference<>() { });
 
     }
 }
