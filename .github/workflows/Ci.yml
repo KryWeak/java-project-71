@@ -32,7 +32,8 @@ jobs:
         run: ./gradlew checkstyleMain checkstyleTest
 
       - name: Generate coverage report
-        run: make report
+        working-directory: app
+        run: ./gradlew jacocoTestReport
 
       - name: Cache SonarQube packages
         uses: actions/cache@v4
