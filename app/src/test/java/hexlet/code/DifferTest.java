@@ -50,8 +50,8 @@ class DifferTest {
 
     @Test
     void testEmptyFiles() throws Exception {
-        File file1 = new File(getClass().getClassLoader().getResource("file1.yml").getFile());
-        File file2 = new File(getClass().getClassLoader().getResource("file2.yml").getFile());
+        File file1 = new File(getClass().getClassLoader().getResource("empty1.json").getFile());
+        File file2 = new File(getClass().getClassLoader().getResource("empty2.json").getFile());
 
         String expected = "{\n}";
 
