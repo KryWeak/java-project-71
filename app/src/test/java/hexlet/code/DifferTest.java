@@ -35,14 +35,14 @@ class DifferTest {
         File file2 = new File(getClass().getClassLoader().getResource("file2.yml").getFile());
 
         String expected = """
-        {
-          - follow: false
-            host: hexlet.io
-          - proxy: 123.234.53.22
-          - timeout: 50
-          + timeout: 20
-          + verbose: true
-        }""";
+            {
+              - follow: false
+                host: hexlet.io
+              - proxy: 123.234.53.22
+              - timeout: 50
+              + timeout: 20
+              + verbose: true
+            }""";
 
         String actual = Differ.generate(file1.getAbsolutePath(), file2.getAbsolutePath());
         assertEquals(expected.trim(), actual.trim());
