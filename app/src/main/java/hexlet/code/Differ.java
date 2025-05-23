@@ -1,71 +1,42 @@
 package hexlet.code;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Objects;
 
 public class Differ {
-    public static String generate(String filepath1, String filepath2) {
-        String resultComparison = "";
 
-        try {
-            Map<String, Object> file1 = getData(filepath1);
-            Map<String, Object> file2 = getData(filepath2);
+    public static String generate(String filepath1, String filepath2) throws Exception {
+        Map<String, Object> file1 = Parser.parse(filepath1);
+        Map<String, Object> file2 = Parser.parse(filepath2);
+        var allKeys = new TreeSet<String>();
+        allKeys.addAll(file1.keySet());
+        allKeys.addAll(file2.keySet());
 
-            resultComparison = resultComparison + "{";
+        StringBuilder result = new StringBuilder();
+        result.append("{\n");
 
-            var allKeys = new TreeMap<String, Object>();
+        for (String key : allKeys) {
+            boolean inFirst = file1.containsKey(key);
+            boolean inSecond = file2.containsKey(key);
+            Object value1 = file1.get(key);
+            Object value2 = file2.get(key);
 
-            allKeys.putAll(file1);
-            allKeys.putAll(file2);
-
-            for (String key : allKeys.keySet()) {
-                boolean inFirst = file1.containsKey(key);
-                boolean inSecond = file2.containsKey(key);
-
-                Object value1 = file1.get(key);
-                Object value2 = file2.get(key);
-
-                if (inFirst && inSecond) {
-                    if (Objects.equals(value1, value2)) {
-                        String comparison1 = "\n    " + key + ": " + value1;
-                        resultComparison = resultComparison + comparison1;
-                    } else {
-                        String comparison2  = "\n  " + "- " + key + ": " + value1
-                                + "\n  " + "+ " + key + ": " + value2;
-                        resultComparison  = resultComparison + comparison2;
-                    }
-
-                } else if (inFirst) {
-                    String comparison3 = "\n  " + "- " + key + ": " + value1;
-                    resultComparison = resultComparison + comparison3;
-
+            if (inFirst && inSecond) {
+                if (Objects.equals(value1, value2)) {
+                    result.append("    ").append(key).append(": ").append(value1).append("\n");
                 } else {
-                    String comparison4 = "\n  " + "+ " + key + ": " + value2;
-                    resultComparison = resultComparison + comparison4;
+                    result.append("  - ").append(key).append(": ").append(value1).append("\n");
+                    result.append("  + ").append(key).append(": ").append(value2).append("\n");
                 }
-
+            } else if (inFirst) {
+                result.append("  - ").append(key).append(": ").append(value1).append("\n");
+            } else {
+                result.append("  + ").append(key).append(": ").append(value2).append("\n");
             }
-            resultComparison = resultComparison + "\n}";
-            System.out.println("}");
-
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
         }
 
-        return resultComparison;
-    }
-
-    private static Map<String, Object> getData(String filePath) throws Exception {
-        Path path = Path.of(filePath).toAbsolutePath().normalize();
-        String content = Files.readString(path);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(content, new TypeReference<>() { });
-
+        result.append("}");
+        return result.toString();
     }
 }
