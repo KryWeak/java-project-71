@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 
 public class Parser {
@@ -37,7 +35,7 @@ public class Parser {
     static Map<String, Object> getDataJsonFile(String filePath) throws Exception {
         File file = new File(filePath).getAbsoluteFile();
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(file, new TypeReference<>() {});
+        return mapper.readValue(file, new TypeReference<>() { });
 
     }
 }
