@@ -15,14 +15,14 @@ class DifferTest {
         File file2 = new File(getClass().getClassLoader().getResource("file2.json").getFile());
 
         String expected = """
-            {
-              - follow: false
-                host: hexlet.io
-              - proxy: 123.234.53.22
-              - timeout: 50
-              + timeout: 20
-              + verbose: true
-            }""";
+                {
+                  - follow: false
+                    host: hexlet.io
+                  - proxy: 123.234.53.22
+                  - timeout: 50
+                  + timeout: 20
+                  + verbose: true
+                }""";
 
         String actual = Differ.generate(file1.getAbsolutePath(), file2.getAbsolutePath());
         assertEquals(expected.trim(), actual.trim());
@@ -35,14 +35,14 @@ class DifferTest {
         File file2 = new File(getClass().getClassLoader().getResource("file2.yml").getFile());
 
         String expected = """
-            {
-              - follow: false
-                host: hexlet.io
-              - proxy: 123.234.53.22
-              - timeout: 50
-              + timeout: 20
-              + verbose: true
-            }""";
+                {
+                  - follow: false
+                    host: hexlet.io
+                  - proxy: 123.234.53.22
+                  - timeout: 50
+                  + timeout: 20
+                  + verbose: true
+                }""";
 
         String actual = Differ.generate(file1.getAbsolutePath(), file2.getAbsolutePath());
         assertEquals(expected.trim(), actual.trim());
@@ -65,14 +65,46 @@ class DifferTest {
         File file1Copy = new File(getClass().getClassLoader().getResource("file1.json").getFile());
 
         String expected = """
-            {
-                follow: false
-                host: hexlet.io
-                proxy: 123.234.53.22
-                timeout: 50
-            }""";
+                {
+                    follow: false
+                    host: hexlet.io
+                    proxy: 123.234.53.22
+                    timeout: 50
+                }""";
 
         String actual = Differ.generate(file1.getAbsolutePath(), file1Copy.getAbsolutePath());
         assertEquals(expected.trim(), actual.trim());
+    }
+
+    @Test
+    void testStylishFormatExplicit() throws Exception {
+        File file1 = new File(getClass().getClassLoader().getResource("file1.json").getFile());
+        File file2 = new File(getClass().getClassLoader().getResource("file2.json").getFile());
+
+        String expected = """
+                {
+                  - follow: false
+                    host: hexlet.io
+                  - proxy: 123.234.53.22
+                  - timeout: 50
+                  + timeout: 20
+                  + verbose: true
+                }""";
+
+        String actual = Differ.generate(file1.getAbsolutePath(), file2.getAbsolutePath(), "stylish");
+        assertEquals(expected.trim(), actual.trim());
+    }
+
+    @Test
+    void testUnsupportedFormat() {
+        File file1 = new File(getClass().getClassLoader().getResource("file1.json").getFile());
+        File file2 = new File(getClass().getClassLoader().getResource("file2.json").getFile());
+
+        Exception exception = org.junit.jupiter.api.Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> Differ.generate(file1.getAbsolutePath(), file2.getAbsolutePath(), "unsupported")
+        );
+
+        assertEquals("Unsupported format: unsupported", exception.getMessage());
     }
 }
