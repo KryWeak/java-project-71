@@ -44,7 +44,7 @@ sonar {
 }
 
 jacoco {
-    toolVersion = "0.8.13"  // Можно указать актуальную версию
+    toolVersion = "0.8.13"
 }
 
 tasks.test {
