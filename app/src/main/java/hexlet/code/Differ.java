@@ -1,5 +1,8 @@
 package hexlet.code;
 
+import hexlet.code.formatters.Stylish;
+import hexlet.code.formatters.Plain;
+
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +19,7 @@ public class Differ {
 
         return switch (format) {
             case "stylish", "" -> Stylish.format(diff);
+            case "plain" -> Plain.format(diff);
             case null -> Stylish.format(diff);
             default -> throw new IllegalArgumentException("Unsupported format: " + format);
         };

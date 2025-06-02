@@ -1,0 +1,19 @@
+{
+  "chars1": "abc",
+  "chars2": false,
+  "checked": true,
+  "default": {
+    "key": "value"
+  },
+  "id": null,
+  "key2": "value2",
+  "numbers1": [1, 2, 3, 4],
+  "numbers2": [22, 33, 44, 55],
+  "numbers4": [4, 5],
+  "obj1": {
+    "nestedKey": "value"
+  },
+  "setting1": "Another value",
+  "setting2": 300,
+  "setting3": "none"
+}

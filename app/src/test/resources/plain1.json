@@ -1,0 +1,17 @@
+{
+  "chars1": "abc",
+  "chars2": {
+    "a": 1,
+    "b": 2
+  },
+  "checked": false,
+  "default": null,
+  "id": 45,
+  "key1": "value1",
+  "numbers1": [1, 2, 3, 4],
+  "numbers2": [2, 3, 4, 5],
+  "numbers3": [3, 4, 5],
+  "setting1": "Some value",
+  "setting2": 200,
+  "setting3": true
+}
