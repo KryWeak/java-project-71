@@ -41,8 +41,8 @@ public class App implements Runnable {
             Map<String, Object> data1 = getData(filepath1);
             Map<String, Object> data2 = getData(filepath2);
 
-            System.out.println("File 1: " + data1);
-            System.out.println("File 2: " + data2);
+            String diff = Differ.generate(data1, data2);
+            System.out.println(diff);
         } catch (Exception e) {
             System.err.println("Ошибка: " + e.getMessage());
             System.exit(1);
