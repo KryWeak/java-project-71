@@ -3,8 +3,6 @@
 
 [![CI](https://github.com/username/repo-name/actions/workflows/ci.yml/badge.svg)](https://github.com/username/repo-name/actions/workflows/ci.yml)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=username_repo-name&metric=alert_status)](https://sonarcloud.io/dashboard?id=username_repo-name)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=KryWeak_java-project-71&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=KryWeak_java-project-71)
 
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=username_repo-name&metric=coverage)](https://sonarcloud.io/dashboard?id=username_repo-name)
-
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=username_repo-name&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=username_repo-name)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=KryWeak_java-project-71&metric=coverage)](https://sonarcloud.io/summary/new_code?id=KryWeak_java-project-71)
