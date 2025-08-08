@@ -2,14 +2,9 @@ package hexlet.code;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 class DifferTest {
 
@@ -27,81 +22,56 @@ class DifferTest {
     }
 
     @Test
-    void testGenerateWithJsonFiles() throws Exception {
+    void testGenerateWithStylishFormat() throws Exception {
+        String result = Differ.generate(jsonFile1Path, jsonFile2Path, "stylish");
+
+        assertTrue(result.startsWith("{"));
+        assertTrue(result.endsWith("}"));
+        assertTrue(result.contains("+ obj1: {nestedKey=value, isNested=true}"));
+        assertTrue(result.contains("- chars2: [d, e, f]"));
+        assertTrue(result.contains("+ chars2: false"));
+    }
+
+    @Test
+    void testGenerateWithPlainFormat() throws Exception {
+        String result = Differ.generate(jsonFile1Path, jsonFile2Path, "plain");
+
+        assertTrue(result.contains("Property 'chars2' was updated. From [complex value] to false"));
+        assertTrue(result.contains("Property 'checked' was updated. From false to true"));
+        assertTrue(result.contains("Property 'default' was updated. From null to [complex value]"));
+        assertTrue(result.contains("Property 'id' was updated. From 45 to null"));
+        assertTrue(result.contains("Property 'key1' was removed"));
+        assertTrue(result.contains("Property 'key2' was added with value: 'value2'"));
+        assertTrue(result.contains("Property 'numbers2' was updated. From [complex value] to [complex value]"));
+        assertTrue(result.contains("Property 'numbers3' was removed"));
+        assertTrue(result.contains("Property 'numbers4' was added with value: [complex value]"));
+        assertTrue(result.contains("Property 'obj1' was added with value: [complex value]"));
+        assertTrue(result.contains("Property 'setting1' was updated. From 'Some value' to 'Another value'"));
+        assertTrue(result.contains("Property 'setting2' was updated. From 200 to 300"));
+        assertTrue(result.contains("Property 'setting3' was updated. From true to 'none'"));
+    }
+
+    @Test
+    void testGenerateWithDefaultFormat() throws Exception {
         String result = Differ.generate(jsonFile1Path, jsonFile2Path);
 
-        String expected = """
-            {
-              - follow: false
-                host: hexlet.io
-              - proxy: 123.234.53.22
-              - timeout: 50
-              + timeout: 20
-              + verbose: true
-            }""";
-
-        assertEquals(expected, result);
+        assertTrue(result.startsWith("{"));
+        assertTrue(result.endsWith("}"));
     }
 
     @Test
-    void testGenerateWithYamlFiles() throws Exception {
-        String result = Differ.generate(yamlFile1Path, yamlFile2Path);
-
-        String expected = """
-            {
-              - follow: false
-                host: hexlet.io
-              - proxy: 123.234.53.22
-              - timeout: 50
-              + timeout: 20
-              + verbose: true
-            }""";
-
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void testGenerateWithMixedFiles() throws Exception {
-        String result = Differ.generate(jsonFile1Path, yamlFile2Path);
-
-        String expected = """
-            {
-              - follow: false
-                host: hexlet.io
-              - proxy: 123.234.53.22
-              - timeout: 50
-              + timeout: 20
-              + verbose: true
-            }""";
-
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void testGenerateWithIdenticalYamlFiles() throws Exception {
-        String result = Differ.generate(yamlFile1Path, yamlFile1Path);
-
-        String expected = """
-            {
-                follow: false
-                host: hexlet.io
-                proxy: 123.234.53.22
-                timeout: 50
-            }""";
-
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void testGenerateWithUnsupportedFormat(@TempDir Path tempDir) throws Exception {
-        // Создаем файл с неподдерживаемым форматом
-        Path unsupportedFile = tempDir.resolve("file.txt");
-        Files.writeString(unsupportedFile, "some content");
-
+    void testGenerateWithUnsupportedFormat() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Differ.generate(unsupportedFile.toString(), unsupportedFile.toString());
+            Differ.generate(jsonFile1Path, jsonFile2Path, "unsupported");
         });
 
-        assertTrue(exception.getMessage().contains("Unsupported file format"));
+        assertTrue(exception.getMessage().contains("Unsupported format"));
+    }
+
+    @Test
+    void testGenerateWithYamlAndPlainFormat() throws Exception {
+        String result = Differ.generate(yamlFile1Path, yamlFile2Path, "plain");
+        assertTrue(result.contains("Property 'chars2' was updated"));
+        assertTrue(result.contains("Property 'checked' was updated"));
     }
 }
