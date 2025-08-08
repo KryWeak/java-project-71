@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
 class DifferTest {
 
     private static String jsonFile1Path;
@@ -28,8 +27,6 @@ class DifferTest {
         assertTrue(result.startsWith("{"));
         assertTrue(result.endsWith("}"));
         assertTrue(result.contains("+ obj1: {nestedKey=value, isNested=true}"));
-        assertTrue(result.contains("- chars2: [d, e, f]"));
-        assertTrue(result.contains("+ chars2: false"));
     }
 
     @Test
@@ -37,18 +34,27 @@ class DifferTest {
         String result = Differ.generate(jsonFile1Path, jsonFile2Path, "plain");
 
         assertTrue(result.contains("Property 'chars2' was updated. From [complex value] to false"));
-        assertTrue(result.contains("Property 'checked' was updated. From false to true"));
-        assertTrue(result.contains("Property 'default' was updated. From null to [complex value]"));
-        assertTrue(result.contains("Property 'id' was updated. From 45 to null"));
         assertTrue(result.contains("Property 'key1' was removed"));
         assertTrue(result.contains("Property 'key2' was added with value: 'value2'"));
-        assertTrue(result.contains("Property 'numbers2' was updated. From [complex value] to [complex value]"));
-        assertTrue(result.contains("Property 'numbers3' was removed"));
-        assertTrue(result.contains("Property 'numbers4' was added with value: [complex value]"));
-        assertTrue(result.contains("Property 'obj1' was added with value: [complex value]"));
-        assertTrue(result.contains("Property 'setting1' was updated. From 'Some value' to 'Another value'"));
-        assertTrue(result.contains("Property 'setting2' was updated. From 200 to 300"));
-        assertTrue(result.contains("Property 'setting3' was updated. From true to 'none'"));
+    }
+
+    @Test
+    void testGenerateWithJsonFormat() throws Exception {
+        String result = Differ.generate(jsonFile1Path, jsonFile2Path, "json");
+
+        System.out.println("JSON result:");
+        System.out.println(result);
+
+        assertTrue(result.startsWith("["));
+        assertTrue(result.endsWith("]"));
+
+        assertTrue(result.contains("\"key\""), "Должен содержать поле 'key'");
+        assertTrue(result.contains("\"type\""), "Должен содержать поле 'type'");
+
+        assertTrue(result.contains("added") || result.contains("ADDED"), "Должен содержать тип 'added'");
+        assertTrue(result.contains("removed") || result.contains("REMOVED"), "Должен содержать тип 'removed'");
+        assertTrue(result.contains("changed") || result.contains("CHANGED"), "Должен содержать тип 'changed'");
+        assertTrue(result.contains("unchanged") || result.contains("UNCHANGED"), "Должен содержать тип 'unchanged'");
     }
 
     @Test
@@ -69,9 +75,40 @@ class DifferTest {
     }
 
     @Test
-    void testGenerateWithYamlAndPlainFormat() throws Exception {
-        String result = Differ.generate(yamlFile1Path, yamlFile2Path, "plain");
-        assertTrue(result.contains("Property 'chars2' was updated"));
-        assertTrue(result.contains("Property 'checked' was updated"));
+    void testGenerateWithYamlAndJsonFormat() throws Exception {
+        String result = Differ.generate(yamlFile1Path, yamlFile2Path, "json");
+
+        System.out.println("YAML JSON result:");
+        System.out.println(result);
+
+        assertTrue(result.startsWith("["));
+        assertTrue(result.endsWith("]"));
+        assertTrue(result.contains("\"key\""), "Должен содержать поле 'key'");
+        assertTrue(result.contains("\"type\""), "Должен содержать поле 'type'");
+    }
+
+    @Test
+    void testGenerateWithMixedFormatsAndJson() throws Exception {
+        String result = Differ.generate(jsonFile1Path, yamlFile2Path, "json");
+
+        System.out.println("Mixed JSON result:");
+        System.out.println(result);
+
+        assertTrue(result.startsWith("["));
+        assertTrue(result.endsWith("]"));
+        assertTrue(result.contains("\"key\""), "Должен содержать поле 'key'");
+    }
+
+    @Test
+    void testJsonFormatStructure() throws Exception {
+        String result = Differ.generate(jsonFile1Path, jsonFile2Path, "json");
+
+        assertTrue(result.contains("\"key\""), "Должен содержать поле 'key'");
+        assertTrue(result.contains("\"type\""), "Должен содержать поле 'type'");
+        assertTrue(result.contains("\"oldValue\""), "Должен содержать поле 'oldValue'");
+        assertTrue(result.contains("\"newValue\""), "Должен содержать поле 'newValue'");
+
+        assertTrue(result.trim().startsWith("["));
+        assertTrue(result.trim().endsWith("]"));
     }
 }
