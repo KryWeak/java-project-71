@@ -1,6 +1,6 @@
 package hexlet.code;
 
-public class DiffItem {
+public final class DiffItem {  // Добавьте final
     private final String key;
     private final Object oldValue;
     private final Object newValue;
@@ -30,9 +30,9 @@ public class DiffItem {
     }
 
     public enum DiffType {
-        ADDED,      // +
-        REMOVED,    // -
-        CHANGED,    // - и +
-        UNCHANGED   // без префикса
+        ADDED,
+        REMOVED,
+        CHANGED,
+        UNCHANGED
     }
 }
