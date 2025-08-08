@@ -1,13 +1,9 @@
 package hexlet.code;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Map;
 
 @Command(
         name = "gendiff",
@@ -38,20 +34,11 @@ public class App implements Runnable {
     @Override
     public void run() {
         try {
-            Map<String, Object> data1 = getData(filepath1);
-            Map<String, Object> data2 = getData(filepath2);
-
-            String diff = Differ.generate(data1, data2);
+            String diff = Differ.generate(filepath1, filepath2, format);
             System.out.println(diff);
         } catch (Exception e) {
             System.err.println("Ошибка: " + e.getMessage());
             System.exit(1);
         }
-    }
-
-    public static Map<String, Object> getData(String filePath) throws Exception {
-        String content = Files.readString(Paths.get(filePath));
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(content, Map.class);
     }
 }

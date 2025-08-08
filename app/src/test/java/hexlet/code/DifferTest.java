@@ -2,11 +2,14 @@ package hexlet.code;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.io.TempDir;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.nio.file.Path;
+import java.nio.file.Files;
 
 class DifferTest {
 
@@ -15,17 +18,13 @@ class DifferTest {
 
     @BeforeAll
     static void setUp() {
-        // Используем существующие файлы из test/resources
         file1Path = "src/test/resources/file1.json";
         file2Path = "src/test/resources/file2.json";
     }
 
     @Test
     void testGenerateWithDifferentFiles() throws Exception {
-        Map<String, Object> data1 = App.getData(file1Path);
-        Map<String, Object> data2 = App.getData(file2Path);
-
-        String result = Differ.generate(data1, data2);
+        String result = Differ.generate(file1Path, file2Path);
 
         String expected = """
             {
@@ -41,11 +40,15 @@ class DifferTest {
     }
 
     @Test
-    void testGenerateWithIdenticalFiles() throws Exception {
-        Map<String, Object> data1 = App.getData(file1Path);
-        Map<String, Object> data2 = App.getData(file1Path); // Используем тот же файл
+    void testGenerateWithFormat() throws Exception {
+        String result = Differ.generate(file1Path, file2Path, "stylish");
+        assertNotNull(result);
+        assertTrue(result.contains("host: hexlet.io"));
+    }
 
-        String result = Differ.generate(data1, data2);
+    @Test
+    void testGenerateWithIdenticalFiles() throws Exception {
+        String result = Differ.generate(file1Path, file1Path);
 
         String expected = """
             {
@@ -59,95 +62,178 @@ class DifferTest {
     }
 
     @Test
-    void testGenerateWithEmptyMaps() {
-        Map<String, Object> data1 = new HashMap<>();
-        Map<String, Object> data2 = new HashMap<>();
+    void testGenerateWithEmptyFiles(@TempDir Path tempDir) throws Exception {
+        String emptyJson = "{}";
+        Path emptyFile1 = tempDir.resolve("empty1.json");
+        Path emptyFile2 = tempDir.resolve("empty2.json");
 
-        String result = Differ.generate(data1, data2);
-        String expected = "{\n}";
+        Files.writeString(emptyFile1, emptyJson);
+        Files.writeString(emptyFile2, emptyJson);
 
-        assertEquals(expected, result);
+        String result = Differ.generate(emptyFile1.toString(), emptyFile2.toString());
+        assertEquals("{\n}", result);
     }
 
     @Test
-    void testGenerateWithOneEmptyMap() {
-        Map<String, Object> data1 = new HashMap<>();
-        Map<String, Object> data2 = new HashMap<>();
-        data2.put("key", "value");
+    void testGenerateWithOneEmptyFile(@TempDir Path tempDir) throws Exception {
+        String emptyJson = "{}";
+        Path emptyFile = tempDir.resolve("empty.json");
+        Files.writeString(emptyFile, emptyJson);
 
-        String result = Differ.generate(data1, data2);
-        String expected = """
+        String result = Differ.generate(emptyFile.toString(), file1Path);
+
+        // Должен содержать все ключи из file1 с префиксом +
+        assertTrue(result.contains("+ follow: false"));
+        assertTrue(result.contains("+ host: hexlet.io"));
+        assertTrue(result.contains("+ proxy: 123.234.53.22"));
+        assertTrue(result.contains("+ timeout: 50"));
+    }
+
+    @Test
+    void testGenerateWithDifferentDataTypes(@TempDir Path tempDir) throws Exception {
+        String json1 = """
             {
-              + key: value
+              "string": "hello",
+              "number": 42,
+              "boolean": true,
+              "null": null
             }""";
 
-        assertEquals(expected, result);
-    }
+        String json2 = """
+            {
+              "string": "world",
+              "number": 100,
+              "boolean": false,
+              "null": null
+            }""";
 
-    @Test
-    void testGenerateWithRealFiles() throws Exception {
-        // Тест с реальными файлами из resources
-        Map<String, Object> data1 = App.getData(file1Path);
-        Map<String, Object> data2 = App.getData(file2Path);
+        Path file1 = tempDir.resolve("types1.json");
+        Path file2 = tempDir.resolve("types2.json");
 
-        String result = Differ.generate(data1, data2);
+        Files.writeString(file1, json1);
+        Files.writeString(file2, json2);
 
-        // Проверяем, что результат содержит ожидаемые ключи в правильном порядке
-        assertTrue(result.contains("follow: false"), "Должен содержать удаленный ключ follow");
-        assertTrue(result.contains("host: hexlet.io"), "Должен содержать одинаковый ключ host");
-        assertTrue(result.contains("proxy: 123.234.53.22"), "Должен содержать удаленный ключ proxy");
-        assertTrue(result.contains("timeout: 50"), "Должен содержать старое значение timeout");
-        assertTrue(result.contains("timeout: 20"), "Должен содержать новое значение timeout");
-        assertTrue(result.contains("verbose: true"), "Должен содержать добавленный ключ verbose");
+        String result = Differ.generate(file1.toString(), file2.toString());
 
-        // Проверяем правильный порядок (алфавитный)
-        int followIndex = result.indexOf("follow");
-        int hostIndex = result.indexOf("host");
-        int proxyIndex = result.indexOf("proxy");
-        int timeoutIndex = result.indexOf("timeout");
-        int verboseIndex = result.indexOf("verbose");
-
-        assertTrue(followIndex < hostIndex, "follow должен идти перед host");
-        assertTrue(hostIndex < proxyIndex, "host должен идти перед proxy");
-        assertTrue(proxyIndex < timeoutIndex, "proxy должен идти перед timeout");
-        assertTrue(timeoutIndex < verboseIndex, "timeout должен идти перед verbose");
-    }
-
-    @Test
-    void testGenerateWithDifferentValueTypes() {
-        Map<String, Object> data1 = new HashMap<>();
-        Map<String, Object> data2 = new HashMap<>();
-
-        data1.put("number", 42);
-        data1.put("string", "hello");
-        data1.put("boolean", true);
-
-        data2.put("number", 100);
-        data2.put("string", "world");
-        data2.put("boolean", false);
-
-        String result = Differ.generate(data1, data2);
-
-        // Проверяем, что результат содержит различия
-        assertTrue(result.contains("- number: 42"));
-        assertTrue(result.contains("+ number: 100"));
         assertTrue(result.contains("- string: hello"));
         assertTrue(result.contains("+ string: world"));
+        assertTrue(result.contains("- number: 42"));
+        assertTrue(result.contains("+ number: 100"));
         assertTrue(result.contains("- boolean: true"));
         assertTrue(result.contains("+ boolean: false"));
+        assertTrue(result.contains("null: null"));
     }
 
     @Test
-    void testGenerateWithSpecialCharacters() {
-        Map<String, Object> data1 = new HashMap<>();
-        Map<String, Object> data2 = new HashMap<>();
+    void testGenerateWithNestedObjects(@TempDir Path tempDir) throws Exception {
+        String json1 = """
+            {
+              "simple": "value1",
+              "nested": {"key": "value1"}
+            }""";
 
-        data1.put("key with spaces", "value with \"quotes\"");
-        data2.put("key with spaces", "different value");
+        String json2 = """
+            {
+              "simple": "value2",
+              "nested": {"key": "value2"}
+            }""";
 
-        String result = Differ.generate(data1, data2);
+        Path file1 = tempDir.resolve("nested1.json");
+        Path file2 = tempDir.resolve("nested2.json");
+
+        Files.writeString(file1, json1);
+        Files.writeString(file2, json2);
+
+        String result = Differ.generate(file1.toString(), file2.toString());
+
+        assertTrue(result.contains("- simple: value1"));
+        assertTrue(result.contains("+ simple: value2"));
+    }
+
+    @Test
+    void testGenerateWithSpecialCharacters(@TempDir Path tempDir) throws Exception {
+        String json1 = """
+            {
+              "key with spaces": "value with \\"quotes\\"",
+              "unicode": "привет мир"
+            }""";
+
+        String json2 = """
+            {
+              "key with spaces": "different value",
+              "unicode": "hello world"
+            }""";
+
+        Path file1 = tempDir.resolve("special1.json");
+        Path file2 = tempDir.resolve("special2.json");
+
+        Files.writeString(file1, json1);
+        Files.writeString(file2, json2);
+
+        String result = Differ.generate(file1.toString(), file2.toString());
 
         assertTrue(result.contains("- key with spaces: value with \"quotes\""));
         assertTrue(result.contains("+ key with spaces: different value"));
+        assertTrue(result.contains("- unicode: привет мир"));
+        assertTrue(result.contains("+ unicode: hello world"));
     }
+
+    @Test
+    void testGenerateWithLargeNumbers(@TempDir Path tempDir) throws Exception {
+        String json1 = """
+            {
+              "small": 1,
+              "large": 999999999999999999
+            }""";
+
+        String json2 = """
+            {
+              "small": 2,
+              "large": 999999999999999999
+            }""";
+
+        Path file1 = tempDir.resolve("numbers1.json");
+        Path file2 = tempDir.resolve("numbers2.json");
+
+        Files.writeString(file1, json1);
+        Files.writeString(file2, json2);
+
+        String result = Differ.generate(file1.toString(), file2.toString());
+
+        assertTrue(result.contains("- small: 1"));
+        assertTrue(result.contains("+ small: 2"));
+        assertTrue(result.contains("large: 999999999999999999")); // одинаковые
+    }
+
+    @Test
+    void testGenerateWithUnsupportedFormat() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Differ.generate(file1Path, file2Path, "unsupported");
+        });
+
+        assertTrue(exception.getMessage().contains("Unsupported format"));
+    }
+
+    @Test
+    void testGenerateWithNonExistentFile() {
+        Exception exception = assertThrows(Exception.class, () -> {
+            Differ.generate("non-existent-file.json", file2Path);
+        });
+
+        assertNotNull(exception.getMessage());
+    }
+
+    @Test
+    void testGenerateWithInvalidJson(@TempDir Path tempDir) throws Exception {
+        String invalidJson = "{ invalid json }";
+        Path invalidFile = tempDir.resolve("invalid.json");
+        Files.writeString(invalidFile, invalidJson);
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            Differ.generate(invalidFile.toString(), file1Path);
+        });
+
+        assertNotNull(exception.getMessage());
+    }
+
 }
