@@ -47,10 +47,14 @@ tasks.jacocoTestReport {
     }
 }
 
-sonar {
+sonarqube {
     properties {
         property("sonar.projectKey", "KryWeak_java-project-71")
         property("sonar.organization", "kryweak")
         property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.java.coveragePlugin", "jacoco")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
+        property("sonar.sources", "src/main/java")
+        property("sonar.tests", "src/test/java")
     }
 }
