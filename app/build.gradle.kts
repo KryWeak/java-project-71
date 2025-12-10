@@ -3,6 +3,7 @@ plugins {
     application
     checkstyle
     jacoco
+    id("org.sonarqube") version "7.2.0.6526"
 }
 
 application { mainClass.set("hexlet.code.App") }
@@ -33,3 +34,10 @@ tasks.test {
 }
 
 tasks.jacocoTestReport { reports { xml.required.set(true) } }
+
+sonar {
+    properties {
+        property("sonar.projectKey", "KryWeak_java-project-71")
+        property("sonar.organization", "kryweak")
+    }
+}
