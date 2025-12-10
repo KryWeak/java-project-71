@@ -2,7 +2,6 @@
 [![Actions Status](https://github.com/KryWeak/java-project-71/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/KryWeak/java-project-71/actions)
 [![CI](https://github.com/KryWeak/java-project-71/actions/workflows/ci.yml/badge.svg)](https://github.com/KryWeak/java-project-71/actions/workflows/ci.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=KryWeak_java-project-71&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=KryWeak_java-project-71)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=KryWeak_java-project-71&metric=coverage)](https://sonarcloud.io/summary/new_code?id=KryWeak_java-project-71)
 
 ### Example of work:
 
@@ -17,3 +16,5 @@
 <img width="1417" height="471" alt="Снимок экрана 2025-12-10 041028" src="https://github.com/user-attachments/assets/65ec81a4-ecd9-467a-902b-cd917a20143d" />
 
 <img width="1831" height="111" alt="Снимок экрана 2025-12-10 041043" src="https://github.com/user-attachments/assets/f7401877-267a-45b4-a46d-bc18fbc3e151" />
+
+(На SonarQube не удаётся выполнить настройку, поскольку не удаётся подключиться ни с обходом, ни через прокси)
