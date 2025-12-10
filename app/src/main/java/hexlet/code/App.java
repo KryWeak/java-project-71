@@ -1,28 +1,28 @@
 package hexlet.code;
 
+import lombok.Getter;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+import picocli.CommandLine.Option;
 
-@Command(
-        name = "gendiff",
+import java.io.IOException;
+import java.util.concurrent.Callable;
+
+@Command(name = "gendiff",
         mixinStandardHelpOptions = true,
         version = "gendiff 1.0",
-        description = "Compares two configuration files and shows a difference."
-)
-public final class App implements Runnable {
-    @Parameters(index = "0", description = "path to first file")
-    private String filepath1;
+        description = "Compares two configuration files and shows a difference.")
+@Getter
+public final class App implements Callable<Integer> {
+    @Parameters(paramLabel = "filePath1", description = "path to first file")
+    private String filePath1;
 
-    @Parameters(index = "1", description = "path to second file")
-    private String filepath2;
+    @Parameters(paramLabel = "filePath2", description = "path to second file")
+    private String filePath2;
 
-    @Option(
-            names = {"-f", "--format"},
-            description = "output format [default: ${DEFAULT-VALUE}]",
-            defaultValue = "stylish"
-    )
+    @Option(names = { "-f", "--format" }, defaultValue = "stylish", paramLabel = "format",
+            description = "output format [default: ${DEFAULT-VALUE}]")
     private String format;
 
     public static void main(String[] args) {
@@ -31,13 +31,14 @@ public final class App implements Runnable {
     }
 
     @Override
-    public void run() {
+    public Integer call() {
         try {
-            String diff = Differ.generate(filepath1, filepath2, format);
-            System.out.println(diff);
-        } catch (Exception e) {
-            System.err.println("Ошибка: " + e.getMessage());
-            System.exit(1);
+            String difference = Differ.generate(filePath1, filePath2, format);
+            System.out.println(difference);
+        } catch (IOException | IllegalArgumentException e) {
+            System.out.println("Error: " + e);
         }
+
+        return 0;
     }
 }

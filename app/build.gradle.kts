@@ -1,12 +1,12 @@
 plugins {
     id("java")
-    id("com.github.ben-manes.versions") version "0.52.0"
+    id("io.freefair.lombok") version "8.4"
     application
-    id("checkstyle")
-    id("jacoco")
-    id("org.sonarqube") version "6.2.0.5505"
-
+    checkstyle
+    jacoco
 }
+
+application { mainClass.set("hexlet.code.App") }
 
 group = "hexlet.code"
 version = "1.0-SNAPSHOT"
@@ -18,44 +18,19 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation("info.picocli:picocli:4.7.5")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.1")
+
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("org.apache.commons:commons-collections4:4.4")
+
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
+
+    implementation("info.picocli:picocli:4.7.6")
+    annotationProcessor("info.picocli:picocli-codegen:4.1.4")
 }
 
 tasks.test {
     useJUnitPlatform()
 }
 
-application {
-    mainClass.set("hexlet.code.App")
-}
-
-checkstyle {
-    toolVersion = "10.12.5"
-    configFile = file("config/checkstyle/checkstyle.xml")
-}
-
-jacoco {
-    toolVersion = "0.8.12"
-}
-
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-    }
-}
-
-sonarqube {
-    properties {
-        property("sonar.projectKey", "KryWeak_java-project-71")
-        property("sonar.organization", "kryweak")
-        property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.java.coveragePlugin", "jacoco")
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
-        property("sonar.sources", "src/main/java")
-        property("sonar.tests", "src/test/java")
-    }
-}
+tasks.jacocoTestReport { reports { xml.required.set(true) } }
