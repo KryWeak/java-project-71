@@ -29,8 +29,13 @@ jobs:
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./app/gradlew
           restore-keys: ${{ runner.os }}-gradle
+
       - name: Build and analyze
+        working-directory: ./app
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonar --info
+        run: ./gradlew clean test jacocoTestReport sonar --info
