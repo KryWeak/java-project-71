@@ -5,7 +5,7 @@ import hexlet.code.OperationType;
 
 import java.util.TreeMap;
 
-public class StylishFormat implements Format {
+public final class StylishFormat implements Format {
     private static final String PLUS_PREFIX = "  + ";
     private static final String MINUS_PREFIX = "  - ";
     private static final String UNCHANGED_PREFIX = "    ";

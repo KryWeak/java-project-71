@@ -6,7 +6,7 @@ import hexlet.code.utils.CustomUtils;
 
 import java.util.TreeMap;
 
-public class PlainFormat implements Format {
+public final class PlainFormat implements Format {
     private static final String COMPLEX_VALUE = "[complex value]";
     private static final String PROPERTY_PREFIX = "Property '";
     public static final String PLAIN_NAME = "plain";
@@ -58,13 +58,6 @@ public class PlainFormat implements Format {
         appendValueWithQuotesIfNeeded(builder, newValue);
     }
 
-    /**
-     * Метод добавляет одинарные кавычки к передаваемому value, если значение является строкой.
-     * Исключения: строка "[complex value]".
-     *
-     * @param builder StringBuilder с которым необходимо произвести операцию
-     * @param value значение над которым необходимо произвести операцию
-     */
     public static void appendValueWithQuotesIfNeeded(StringBuilder builder, Object value) {
         if (value instanceof String && !value.equals("[complex value]")) {
             builder.append("'").append(value).append("'");
