@@ -16,14 +16,6 @@ public class Formatter {
             JSON_NAME, new JsonFormat()
     );
 
-    /***
-     * Метод преобразует данные в выбранный/поддерживаемый формат.
-     *
-     * @param diffData данные для преобразования
-     * @param format формат выходных данных
-     * @return строка в выбранном формате
-     * @throws IOException если формат не поддерживается
-     */
     public static String format(TreeMap<String, Node> diffData, String format) throws IOException {
         return FORMATS.get(format).generate(diffData);
     }

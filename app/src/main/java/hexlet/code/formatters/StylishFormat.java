@@ -11,12 +11,6 @@ public class StylishFormat implements Format {
     private static final String UNCHANGED_PREFIX = "    ";
     public static final String STYLISH_NAME = "stylish";
 
-    /**
-     * Метод генерирует текст в формате stylish.
-     *
-     * @param diffData данные для генерации
-     * @return текст в формате stylish
-     */
     public String generate(TreeMap<String, Node> diffData) {
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");

@@ -11,13 +11,6 @@ public class PlainFormat implements Format {
     private static final String PROPERTY_PREFIX = "Property '";
     public static final String PLAIN_NAME = "plain";
 
-    /**
-     * Метод генерирует текст в формате plain.
-     *
-     * @param diffData данные для генерации
-     * @return текст в формате plain
-     * @throws IllegalStateException если не найдено элемента в OperationType
-     */
     public String generate(TreeMap<String, Node> diffData) throws IllegalStateException {
         StringBuilder builder = new StringBuilder();
         diffData.forEach((key, node) -> {
