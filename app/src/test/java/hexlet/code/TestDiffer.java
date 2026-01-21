@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import hexlet.code.Differ;
 import hexlet.code.utils.FileReader;
 import org.junit.jupiter.api.Test;
 
@@ -7,43 +8,66 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestDiffer {
+class TestDiffer {
+
+    private final String json1 = "src/test/resources/fixtures/file1.json";
+    private final String json2 = "src/test/resources/fixtures/file2.json";
+    private final String yml1 = "src/test/resources/fixtures/file1.yml";
+    private final String yml2 = "src/test/resources/fixtures/file2.yml";
+
     @Test
-    public void generateTest() throws IOException {
-        // Проверка json
-        String path1 = "src/test/resources/fixtures/file1.json";
-        String path2 = "src/test/resources/fixtures/file2.json";
+    void testJsonStylish() throws IOException {
+        assertEquals(
+                FileReader.getFileText("src/test/resources/fixtures/expected/stylish.txt"),
+                Differ.generate(json1, json2, "stylish")
+        );
+    }
 
-        String expected1 = FileReader.getFileText("src/test/resources/fixtures/expected/stylish.txt");
-        String actual1 = Differ.generate(path1, path2, "stylish");
-        assertEquals(expected1, actual1);
+    @Test
+    void testJsonPlain() throws IOException {
+        assertEquals(
+                FileReader.getFileText("src/test/resources/fixtures/expected/plain.txt"),
+                Differ.generate(json1, json2, "plain")
+        );
+    }
 
-        String expected2 = FileReader.getFileText("src/test/resources/fixtures/expected/plain.txt");
-        String actual2 = Differ.generate(path1, path2, "plain");
-        assertEquals(expected2, actual2);
+    @Test
+    void testJsonFormat() throws IOException {
+        assertEquals(
+                FileReader.getFileText("src/test/resources/fixtures/expected/json.json"),
+                Differ.generate(json1, json2, "json")
+        );
+    }
 
-        String expected3 = FileReader.getFileText("src/test/resources/fixtures/expected/json.json");
-        String actual3 = Differ.generate(path1, path2, "json");
-        assertEquals(expected3, actual3);
+    @Test
+    void testJsonDefault() throws IOException {
+        assertEquals(
+                FileReader.getFileText("src/test/resources/fixtures/expected/stylish.txt"),
+                Differ.generate(json1, json2)
+        );
+    }
 
-        String expected4 = FileReader.getFileText("src/test/resources/fixtures/expected/stylish.txt");
-        String actual4 = Differ.generate(path1, path2);
-        assertEquals(expected4, actual4);
+    @Test
+    void testYmlStylish() throws IOException {
+        assertEquals(
+                FileReader.getFileText("src/test/resources/fixtures/expected/stylish.txt"),
+                Differ.generate(yml1, yml2, "stylish")
+        );
+    }
 
-        // Проверка yml
-        String path3 = "src/test/resources/fixtures/file1.yml";
-        String path4 = "src/test/resources/fixtures/file2.yml";
+    @Test
+    void testYmlPlain() throws IOException {
+        assertEquals(
+                FileReader.getFileText("src/test/resources/fixtures/expected/plain.txt"),
+                Differ.generate(yml1, yml2, "plain")
+        );
+    }
 
-        String expected5 = FileReader.getFileText("src/test/resources/fixtures/expected/stylish.txt");
-        String actual5 = Differ.generate(path3, path4, "stylish");
-        assertEquals(expected5, actual5);
-
-        String expected6 = FileReader.getFileText("src/test/resources/fixtures/expected/plain.txt");
-        String actual6 = Differ.generate(path3, path4, "plain");
-        assertEquals(expected6, actual6);
-
-        String expected7 = FileReader.getFileText("src/test/resources/fixtures/expected/json.json");
-        String actual7 = Differ.generate(path3, path4, "json");
-        assertEquals(expected7, actual7);
+    @Test
+    void testYmlJson() throws IOException {
+        assertEquals(
+                FileReader.getFileText("src/test/resources/fixtures/expected/json.json"),
+                Differ.generate(yml1, yml2, "json")
+        );
     }
 }
