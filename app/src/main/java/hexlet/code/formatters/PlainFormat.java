@@ -1,7 +1,6 @@
 package hexlet.code.formatters;
 
 import hexlet.code.Node;
-import hexlet.code.OperationType;
 import hexlet.code.utils.CustomUtils;
 
 import java.util.TreeMap;
