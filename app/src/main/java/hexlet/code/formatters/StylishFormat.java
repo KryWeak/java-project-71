@@ -20,20 +20,21 @@ public final class StylishFormat implements Format {
             Object newValue = node.getNewValue();
 
             switch (type) {
-                case OperationType.ADDED:
+                case ADDED:
                     appendChange(builder, PLUS_PREFIX, key, newValue);
                     break;
-                case OperationType.DELETED:
+                case DELETED:
                     appendChange(builder, MINUS_PREFIX, key, oldValue);
                     break;
-                case OperationType.UNCHANGED:
+                case UNCHANGED:
                     appendChange(builder, UNCHANGED_PREFIX, key, newValue);
                     break;
-                case OperationType.UPDATED:
+                case UPDATED:
                     appendChange(builder, MINUS_PREFIX, key, oldValue);
                     appendChange(builder, PLUS_PREFIX, key, newValue);
                     break;
                 default:
+                    throw new IllegalStateException("Unexpected operation type: " + type);
             }
         });
         builder.append("}");

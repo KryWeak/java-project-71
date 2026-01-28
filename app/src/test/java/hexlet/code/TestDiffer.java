@@ -47,6 +47,14 @@ class TestDiffer {
     }
 
     @Test
+    void testYmlDefault() throws IOException {
+        assertEquals(
+                FileReader.getFileText("src/test/resources/fixtures/expected/stylish.txt"),
+                Differ.generate(yml1, yml2)
+        );
+    }
+
+    @Test
     void testYmlStylish() throws IOException {
         assertEquals(
                 FileReader.getFileText("src/test/resources/fixtures/expected/stylish.txt"),

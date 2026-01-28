@@ -46,7 +46,9 @@ public final class PlainFormat implements Format {
                     break;
 
                 default:
-                    throw new IllegalStateException("Unexpected operation type");
+                    throw new IllegalStateException(
+                            "Plain formatter does not support operation type: " + node.getType()
+                    );
             }
         });
 
